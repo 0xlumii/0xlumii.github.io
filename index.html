@@ -1,37 +1,68 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>[ HANDLE ] — Security Researcher</title>
+<title>[ 0xlumi ] — Application Security Engineer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-:root{
+
+/* ══════ DARK THEME (default) ══════ */
+:root,[data-theme="dark"]{
   --bg:#0a0a0f;--bg2:#111119;--bg3:#16161f;--bg4:#1c1c28;
   --text:#e0e0e8;--text2:#8888a0;--text3:#555570;
   --accent:#00ff88;--accent2:#00cc6a;--accent-glow:rgba(0,255,136,.15);
   --red:#ff3355;--amber:#ffaa00;--cyan:#00ddff;--purple:#aa55ff;
-  --mono:'JetBrains Mono',monospace;
-  --sans:'Outfit',sans-serif;
-  --border:1px solid rgba(255,255,255,.06);
-  --radius:12px;
+  --border-color:rgba(255,255,255,.06);
+  --nav-bg:rgba(10,10,15,.8);
+  --scanline:rgba(0,0,0,.03);
+  --glow-color:rgba(0,255,136,.04);
+  --card-hover:rgba(0,255,136,.15);
+  --selection-bg:var(--accent);--selection-color:var(--bg);
+  --hero-grid-line:rgba(255,255,255,.02);
+  --stat-gradient-1:var(--accent);--stat-gradient-2:var(--cyan);
+  --tag-bg:rgba(0,255,136,.08);--tag-border:rgba(0,255,136,.1);
+  --contact-hover-bg:rgba(0,255,136,.03);
+  --terminal-shadow:none;
 }
+
+/* ══════ LIGHT THEME ══════ */
+[data-theme="light"]{
+  --bg:#f5f5f0;--bg2:#ffffff;--bg3:#eeeee8;--bg4:#e0e0d8;
+  --text:#1a1a2e;--text2:#555570;--text3:#8888a0;
+  --accent:#00994d;--accent2:#007a3d;--accent-glow:rgba(0,153,77,.1);
+  --red:#cc2244;--amber:#cc8800;--cyan:#0099bb;--purple:#7733cc;
+  --border-color:rgba(0,0,0,.08);
+  --nav-bg:rgba(245,245,240,.85);
+  --scanline:rgba(0,0,0,.01);
+  --glow-color:rgba(0,153,77,.03);
+  --card-hover:rgba(0,153,77,.12);
+  --selection-bg:var(--accent);--selection-color:#fff;
+  --hero-grid-line:rgba(0,0,0,.04);
+  --stat-gradient-1:var(--accent);--stat-gradient-2:var(--cyan);
+  --tag-bg:rgba(0,153,77,.08);--tag-border:rgba(0,153,77,.15);
+  --contact-hover-bg:rgba(0,153,77,.05);
+  --terminal-shadow:0 8px 32px rgba(0,0,0,.1);
+}
+
 html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--bg4) var(--bg)}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);overflow-x:hidden;-webkit-font-smoothing:antialiased}
-::selection{background:var(--accent);color:var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+::selection{background:var(--selection-bg);color:var(--selection-color)}
+
+--mono:'JetBrains Mono',monospace;
 
 /* SCANLINE */
 body::after{
   content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
-  background:repeating-linear-gradient(0deg,transparent,transparent 2px,rgba(0,0,0,.03) 2px,rgba(0,0,0,.03) 4px);
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline) 2px,var(--scanline) 4px);
 }
 
 /* CURSOR GLOW */
 .cursor-glow{
   position:fixed;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;
-  background:radial-gradient(circle,rgba(0,255,136,.04) 0%,transparent 70%);
+  background:radial-gradient(circle,var(--glow-color) 0%,transparent 70%);
   transform:translate(-50%,-50%);transition:opacity .3s;
 }
 
@@ -39,17 +70,17 @@ body::after{
 nav{
   position:fixed;top:0;left:0;right:0;z-index:100;
   padding:1rem 2rem;
-  background:rgba(10,10,15,.8);backdrop-filter:blur(20px);
-  border-bottom:var(--border);
+  background:var(--nav-bg);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-color);
   display:flex;align-items:center;justify-content:space-between;
-  transition:transform .3s;
+  transition:transform .3s,background .4s;
 }
 nav.hidden{transform:translateY(-100%)}
-.nav-logo{font-family:var(--mono);font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em}
 .nav-logo span{color:var(--text3);font-weight:300}
 .nav-links{display:flex;gap:2rem;align-items:center}
 .nav-links a{
-  font-family:var(--mono);font-size:.75rem;color:var(--text2);
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text2);
   text-decoration:none;letter-spacing:.08em;text-transform:uppercase;
   transition:color .2s;position:relative;
 }
@@ -59,15 +90,34 @@ nav.hidden{transform:translateY(-100%)}
 }
 .nav-links a:hover{color:var(--accent)}
 .nav-links a:hover::after{width:100%}
-.nav-status{
-  display:flex;align-items:center;gap:.5rem;
-  font-family:var(--mono);font-size:.7rem;color:var(--accent);
+
+/* THEME TOGGLE */
+.theme-toggle{
+  display:flex;align-items:center;gap:.5rem;cursor:pointer;
+  background:var(--bg3);border:1px solid var(--border-color);
+  border-radius:100px;padding:4px;width:52px;height:28px;
+  position:relative;transition:all .3s;
 }
-.nav-status .dot{
-  width:6px;height:6px;border-radius:50%;background:var(--accent);
-  animation:pulse-dot 2s infinite;
+.theme-toggle:hover{border-color:var(--accent)}
+.toggle-thumb{
+  width:20px;height:20px;border-radius:50%;
+  background:var(--accent);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;
 }
-@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+[data-theme="light"] .toggle-thumb{transform:translateX(24px)}
+.toggle-icon-dark,.toggle-icon-light{
+  position:absolute;top:50%;transform:translateY(-50%);
+  font-size:12px;pointer-events:none;transition:opacity .3s;
+}
+.toggle-icon-dark{left:8px}
+.toggle-icon-light{right:7px}
+[data-theme="dark"] .toggle-icon-dark{opacity:1}
+[data-theme="dark"] .toggle-icon-light{opacity:.3}
+[data-theme="light"] .toggle-icon-dark{opacity:.3}
+[data-theme="light"] .toggle-icon-light{opacity:1}
+
 .mobile-toggle{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.4rem}
 
 /* HERO */
@@ -78,18 +128,18 @@ nav.hidden{transform:translateY(-100%)}
 .hero-grid{
   position:absolute;inset:0;
   background-image:
-    linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);
+    linear-gradient(var(--hero-grid-line) 1px,transparent 1px),
+    linear-gradient(90deg,var(--hero-grid-line) 1px,transparent 1px);
   background-size:60px 60px;
   mask-image:radial-gradient(ellipse 80% 60% at 50% 40%,black 30%,transparent 100%);
 }
 .hero-content{max-width:900px;position:relative;z-index:2}
 .hero-tag{
   display:inline-flex;align-items:center;gap:.6rem;
-  font-family:var(--mono);font-size:.7rem;color:var(--accent);
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);
   letter-spacing:.15em;text-transform:uppercase;margin-bottom:2rem;
-  padding:.5rem 1rem;border:1px solid rgba(0,255,136,.2);border-radius:100px;
-  background:rgba(0,255,136,.05);
+  padding:.5rem 1rem;border:1px solid var(--tag-border);border-radius:100px;
+  background:var(--tag-bg);
   opacity:0;animation:fadeUp .8s .2s forwards;
 }
 .hero-tag .line{width:20px;height:1px;background:var(--accent)}
@@ -99,6 +149,7 @@ nav.hidden{transform:translateY(-100%)}
   opacity:0;animation:fadeUp .8s .4s forwards;
 }
 .hero-name .accent{color:var(--accent);text-shadow:0 0 60px rgba(0,255,136,.3)}
+[data-theme="light"] .hero-name .accent{text-shadow:none}
 .hero-sub{
   font-size:clamp(1rem,2vw,1.4rem);color:var(--text2);
   font-weight:300;line-height:1.6;max-width:600px;margin-bottom:3rem;
@@ -107,29 +158,31 @@ nav.hidden{transform:translateY(-100%)}
 .hero-sub strong{color:var(--text);font-weight:500}
 .hero-actions{display:flex;gap:1rem;flex-wrap:wrap;opacity:0;animation:fadeUp .8s .8s forwards}
 .btn{
-  font-family:var(--mono);font-size:.8rem;padding:.9rem 2rem;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;padding:.9rem 2rem;
   border-radius:8px;cursor:pointer;letter-spacing:.05em;
   text-decoration:none;transition:all .25s;display:inline-flex;align-items:center;gap:.5rem;
 }
 .btn-primary{background:var(--accent);color:var(--bg);border:none;font-weight:600}
-.btn-primary:hover{background:#00ffaa;box-shadow:0 0 30px rgba(0,255,136,.3);transform:translateY(-2px)}
-.btn-ghost{background:transparent;color:var(--text);border:1px solid rgba(255,255,255,.15)}
+.btn-primary:hover{box-shadow:0 0 30px var(--accent-glow);transform:translateY(-2px)}
+[data-theme="dark"] .btn-primary:hover{background:#00ffaa}
+.btn-ghost{background:transparent;color:var(--text);border:1px solid var(--border-color)}
 .btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
 
 /* TERMINAL */
 .hero-terminal{
   position:absolute;right:4rem;top:50%;transform:translateY(-50%);
-  width:420px;background:var(--bg2);border:var(--border);border-radius:var(--radius);
+  width:420px;background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
   overflow:hidden;opacity:0;animation:fadeUp 1s 1s forwards;
+  box-shadow:var(--terminal-shadow);
 }
 .terminal-bar{
   display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;
-  background:var(--bg3);border-bottom:var(--border);
+  background:var(--bg3);border-bottom:1px solid var(--border-color);
 }
 .terminal-dot{width:10px;height:10px;border-radius:50%}
 .terminal-dot.r{background:var(--red)}.terminal-dot.y{background:var(--amber)}.terminal-dot.g{background:var(--accent)}
-.terminal-title{font-family:var(--mono);font-size:.65rem;color:var(--text3);margin-left:auto}
-.terminal-body{padding:1.2rem;font-family:var(--mono);font-size:.75rem;line-height:1.8}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);margin-left:auto}
+.terminal-body{padding:1.2rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.8}
 .terminal-body .prompt{color:var(--accent)}
 .terminal-body .cmd{color:var(--text)}
 .terminal-body .output{color:var(--text2)}
@@ -142,7 +195,7 @@ nav.hidden{transform:translateY(-100%)}
 /* SECTIONS */
 section{padding:6rem 4rem;position:relative}
 .section-label{
-  font-family:var(--mono);font-size:.65rem;color:var(--accent);
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);
   letter-spacing:.2em;text-transform:uppercase;margin-bottom:.75rem;
   display:flex;align-items:center;gap:1rem;
 }
@@ -153,28 +206,28 @@ section{padding:6rem 4rem;position:relative}
 /* STATS */
 .stats{
   display:grid;grid-template-columns:repeat(4,1fr);gap:1px;
-  background:rgba(255,255,255,.05);border-radius:var(--radius);overflow:hidden;margin:0 4rem;
+  background:rgba(128,128,128,.1);border-radius:12px;overflow:hidden;margin:0 4rem;
 }
 .stat{background:var(--bg2);padding:2.5rem 2rem;text-align:center;transition:background .3s}
 .stat:hover{background:var(--bg3)}
 .stat-num{
   font-size:clamp(2rem,4vw,3rem);font-weight:800;letter-spacing:-.03em;margin-bottom:.3rem;
-  background:linear-gradient(135deg,var(--accent),var(--cyan));
+  background:linear-gradient(135deg,var(--stat-gradient-1),var(--stat-gradient-2));
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 }
-.stat-label{font-family:var(--mono);font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
+.stat-label{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text3);letter-spacing:.1em;text-transform:uppercase}
 
 /* SKILLS */
 .skills-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1.5rem}
 .skill-card{
-  background:var(--bg2);border:var(--border);border-radius:var(--radius);
+  background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
   padding:2rem;transition:all .3s;position:relative;overflow:hidden;
 }
 .skill-card::before{
   content:'';position:absolute;top:0;left:0;right:0;height:2px;
   background:linear-gradient(90deg,var(--accent),transparent);opacity:0;transition:opacity .3s;
 }
-.skill-card:hover{border-color:rgba(0,255,136,.15);transform:translateY(-4px)}
+.skill-card:hover{border-color:var(--card-hover);transform:translateY(-4px)}
 .skill-card:hover::before{opacity:1}
 .skill-icon{
   width:44px;height:44px;border-radius:10px;background:var(--accent-glow);
@@ -184,9 +237,9 @@ section{padding:6rem 4rem;position:relative}
 .skill-card p{font-size:.85rem;color:var(--text2);line-height:1.6}
 .skill-tags{display:flex;flex-wrap:wrap;gap:.4rem;margin-top:1rem}
 .skill-tags span{
-  font-family:var(--mono);font-size:.6rem;color:var(--accent);
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--accent);
   padding:.25rem .6rem;border-radius:4px;
-  background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.1);
+  background:var(--tag-bg);border:1px solid var(--tag-border);
 }
 
 /* TIMELINE */
@@ -195,96 +248,65 @@ section{padding:6rem 4rem;position:relative}
   content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
   background:linear-gradient(to bottom,var(--accent),var(--bg3));
 }
-.timeline-item{position:relative;margin-bottom:3rem;padding-bottom:3rem;border-bottom:var(--border)}
+.timeline-item{position:relative;margin-bottom:3rem;padding-bottom:3rem;border-bottom:1px solid var(--border-color)}
 .timeline-item:last-child{border-bottom:none;margin-bottom:0}
 .timeline-item::before{
   content:'';position:absolute;left:-3rem;top:.5rem;
   width:9px;height:9px;border-radius:50%;background:var(--accent);
-  box-shadow:0 0 12px rgba(0,255,136,.4);transform:translateX(-4px);
+  box-shadow:0 0 12px var(--accent-glow);transform:translateX(-4px);
 }
-.timeline-date{font-family:var(--mono);font-size:.7rem;color:var(--accent);letter-spacing:.1em;margin-bottom:.5rem}
+.timeline-date{font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);letter-spacing:.1em;margin-bottom:.5rem}
 .timeline-item h3{font-size:1.2rem;font-weight:600;margin-bottom:.3rem}
 .timeline-item .org{font-size:.9rem;color:var(--text2);margin-bottom:.8rem}
 .timeline-item p{font-size:.9rem;color:var(--text2);line-height:1.7}
 
-/* HOF */
-.hof-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:1.5rem}
-.hof-card{
-  background:var(--bg2);border:var(--border);border-radius:var(--radius);
-  padding:1.8rem;transition:all .3s;
-}
-.hof-card:hover{border-color:rgba(0,255,136,.2);transform:translateY(-3px)}
-.hof-card .company{font-size:1.5rem;font-weight:700;margin-bottom:.3rem;display:flex;align-items:center;gap:.6rem}
-.hof-card .severity{
-  font-family:var(--mono);font-size:.65rem;letter-spacing:.08em;
-  padding:.3rem .7rem;border-radius:4px;display:inline-block;margin-bottom:.8rem;
-}
-.severity.critical{background:rgba(255,51,85,.12);color:var(--red);border:1px solid rgba(255,51,85,.2)}
-.severity.high{background:rgba(255,170,0,.12);color:var(--amber);border:1px solid rgba(255,170,0,.2)}
-.severity.medium{background:rgba(0,221,255,.12);color:var(--cyan);border:1px solid rgba(0,221,255,.2)}
-.hof-card .desc{font-size:.85rem;color:var(--text2);line-height:1.6}
-.hof-card .reward{font-family:var(--mono);font-size:.85rem;color:var(--accent);margin-top:1rem;display:flex;align-items:center;gap:.4rem}
-
-/* CVE TABLE */
-.cve-table{width:100%;border-collapse:collapse;font-size:.85rem}
-.cve-table th{
-  font-family:var(--mono);font-size:.65rem;color:var(--text3);
-  letter-spacing:.1em;text-transform:uppercase;text-align:left;
-  padding:1rem 1.2rem;border-bottom:1px solid rgba(255,255,255,.08);
-}
-.cve-table td{padding:1rem 1.2rem;border-bottom:var(--border);color:var(--text2);transition:background .2s}
-.cve-table tr:hover td{background:rgba(255,255,255,.02)}
-.cve-table .cve-id{font-family:var(--mono);color:var(--accent);font-weight:500;font-size:.8rem}
-.cve-table .cvss{font-family:var(--mono);font-weight:700;font-size:.85rem}
-.cvss.crit{color:var(--red)}.cvss.high{color:var(--amber)}.cvss.med{color:var(--cyan)}
-
 /* WRITEUPS */
 .writeups-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:1.5rem}
 .writeup-card{
-  background:var(--bg2);border:var(--border);border-radius:var(--radius);
+  background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
   overflow:hidden;transition:all .3s;cursor:pointer;text-decoration:none;color:inherit;display:block;
 }
-.writeup-card:hover{border-color:rgba(0,255,136,.15);transform:translateY(-4px)}
+.writeup-card:hover{border-color:var(--card-hover);transform:translateY(-4px)}
 .writeup-banner{
   height:160px;position:relative;overflow:hidden;
   display:flex;align-items:center;justify-content:center;
 }
 .writeup-banner .code-bg{
-  font-family:var(--mono);font-size:.55rem;color:rgba(0,255,136,.1);
+  font-family:'JetBrains Mono',monospace;font-size:.55rem;color:var(--tag-border);
   line-height:1.4;padding:1rem;word-break:break-all;position:absolute;inset:0;overflow:hidden;
 }
 .writeup-banner .tag{
-  position:relative;z-index:1;font-family:var(--mono);font-size:.7rem;
-  color:var(--accent);padding:.4rem .8rem;border:1px solid rgba(0,255,136,.2);
-  border-radius:4px;background:rgba(10,10,15,.8);
+  position:relative;z-index:1;font-family:'JetBrains Mono',monospace;font-size:.7rem;
+  color:var(--accent);padding:.4rem .8rem;border:1px solid var(--tag-border);
+  border-radius:4px;background:var(--bg);
 }
 .writeup-body{padding:1.5rem}
 .writeup-body h3{font-size:1.05rem;font-weight:600;margin-bottom:.5rem;line-height:1.4}
 .writeup-body p{font-size:.82rem;color:var(--text2);line-height:1.6;margin-bottom:1rem}
-.writeup-meta{display:flex;gap:1.2rem;font-family:var(--mono);font-size:.65rem;color:var(--text3)}
+.writeup-meta{display:flex;gap:1.2rem;font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3)}
 
 /* CERTS */
 .cert-list{display:flex;flex-wrap:wrap;gap:1rem}
 .cert-badge{
   display:flex;align-items:center;gap:1rem;
-  background:var(--bg2);border:var(--border);border-radius:var(--radius);
+  background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
   padding:1.2rem 1.5rem;transition:all .3s;flex:1;min-width:280px;
 }
-.cert-badge:hover{border-color:rgba(0,255,136,.15)}
+.cert-badge:hover{border-color:var(--card-hover)}
 .cert-icon{
   width:48px;height:48px;border-radius:10px;
-  background:linear-gradient(135deg,rgba(0,255,136,.1),rgba(0,221,255,.1));
+  background:linear-gradient(135deg,var(--accent-glow),rgba(0,180,220,.1));
   display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  font-size:1.1rem;font-weight:700;color:var(--accent);font-family:var(--mono);
+  font-size:1.1rem;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;
 }
 .cert-info h4{font-size:.95rem;font-weight:600;margin-bottom:.2rem}
 .cert-info p{font-size:.75rem;color:var(--text3)}
 
 /* TOOLS MARQUEE */
-.tools-section{background:var(--bg2);padding:3rem 0;border-top:var(--border);border-bottom:var(--border);overflow:hidden}
+.tools-section{background:var(--bg2);padding:3rem 0;border-top:1px solid var(--border-color);border-bottom:1px solid var(--border-color);overflow:hidden;transition:background .4s}
 .marquee{display:flex;gap:3rem;animation:marquee 30s linear infinite;width:max-content}
 .marquee-item{
-  font-family:var(--mono);font-size:.8rem;color:var(--text3);
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text3);
   white-space:nowrap;display:flex;align-items:center;gap:.5rem;
 }
 .marquee-item::before{content:'◆';color:var(--accent);font-size:.5rem}
@@ -296,16 +318,17 @@ section{padding:6rem 4rem;position:relative}
 .contact-section .section-desc{margin:0 auto 3rem}
 .contact-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
 .contact-link{
-  font-family:var(--mono);font-size:.8rem;color:var(--text2);
-  text-decoration:none;padding:.8rem 1.5rem;border:var(--border);border-radius:8px;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text2);
+  text-decoration:none;padding:.8rem 1.5rem;border:1px solid var(--border-color);border-radius:8px;
   transition:all .3s;display:flex;align-items:center;gap:.5rem;
 }
-.contact-link:hover{border-color:var(--accent);color:var(--accent);background:rgba(0,255,136,.03)}
+.contact-link:hover{border-color:var(--accent);color:var(--accent);background:var(--contact-hover-bg)}
 
 /* FOOTER */
 footer{
   text-align:center;padding:2rem 4rem;
-  font-family:var(--mono);font-size:.65rem;color:var(--text3);border-top:var(--border);
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);border-top:1px solid var(--border-color);
+  transition:border-color .4s;
 }
 
 /* SCROLL REVEAL */
@@ -322,8 +345,9 @@ footer{
 @media(max-width:768px){
   .nav-links{
     display:none;position:fixed;top:0;left:0;right:0;bottom:0;
-    background:rgba(10,10,15,.98);flex-direction:column;
+    background:var(--bg);flex-direction:column;
     align-items:center;justify-content:center;gap:2rem;z-index:200;
+    opacity:.98;
   }
   .nav-links.open{display:flex}
   .nav-links a{font-size:1rem}
@@ -331,14 +355,16 @@ footer{
   .stats{grid-template-columns:1fr 1fr}
   .hero-name{font-size:clamp(2.5rem,10vw,4rem)}
   .contact-section{padding:4rem 1.5rem}
+  .nav-right{gap:.6rem}
 }
 @media(max-width:480px){
   .stats{grid-template-columns:1fr;margin:0 1.5rem}
   .hero{padding:6rem 1.5rem 3rem}
   section{padding:3rem 1.5rem}
   .skills-grid,.writeups-grid{grid-template-columns:1fr}
-  .hof-grid{grid-template-columns:1fr}
 }
+
+.nav-right{display:flex;align-items:center;gap:1rem}
 </style>
 </head>
 <body>
@@ -347,33 +373,38 @@ footer{
 
 <!-- NAV -->
 <nav id="nav">
-  <div class="nav-logo">&gt; YOUR_HANDLE<span>.sec</span></div>
+  <div class="nav-logo">&gt; 0xlumi<span>.sec</span></div>
   <div class="nav-links" id="navLinks">
     <a href="#about">About</a>
     <a href="#skills">Skills</a>
     <a href="#experience">Experience</a>
-    <a href="#hof">Hall of Fame</a>
-    <a href="#cves">CVEs</a>
     <a href="#writeups">Writeups</a>
+    <a href="#certs">Certs</a>
     <a href="#contact">Contact</a>
   </div>
-  <div class="nav-status"><span class="dot"></span> Available for Work</div>
-  <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme" tabindex="0">
+      <span class="toggle-icon-dark">🌙</span>
+      <span class="toggle-icon-light">☀️</span>
+      <div class="toggle-thumb"></div>
+    </div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+  </div>
 </nav>
 
 <!-- HERO -->
 <section class="hero" id="hero">
   <div class="hero-grid"></div>
   <div class="hero-content">
-    <div class="hero-tag"><span class="line"></span> Security Researcher &amp; Bug Bounty Hunter</div>
+    <div class="hero-tag"><span class="line"></span> Application Security Engineer &amp; Bug Bounty Hunter</div>
     <h1 class="hero-name">Breaking<br>things <span class="accent">ethically.</span></h1>
     <p class="hero-sub">
       I find vulnerabilities before the bad actors do. Specialized in
       <strong>web application security</strong>, <strong>API exploitation</strong>,
-      and <strong>cloud misconfigurations</strong> — helping companies build a safer internet.
+      and <strong>AI security testing</strong> — helping companies build a safer internet.
     </p>
     <div class="hero-actions">
-      <a href="#hof" class="btn btn-primary">View Hall of Fame ↓</a>
+      <a href="#writeups" class="btn btn-primary">View Writeups ↓</a>
       <a href="#contact" class="btn btn-ghost">Get in Touch</a>
     </div>
   </div>
@@ -387,14 +418,14 @@ footer{
     </div>
     <div class="terminal-body">
       <div><span class="prompt">λ</span> <span class="cmd">whoami</span></div>
-      <div class="output">security_researcher // bug_bounty_hunter</div>
+      <div class="output">0xlumi // appsec_engineer // bug_bounty_hunter</div>
       <br>
       <div><span class="prompt">λ</span> <span class="cmd">cat skills.json</span></div>
       <div class="output">{</div>
       <div class="output">&nbsp; <span class="highlight">"web_app_pentest"</span>: true,</div>
       <div class="output">&nbsp; <span class="highlight">"api_security"</span>: true,</div>
-      <div class="output">&nbsp; <span class="highlight">"cloud_security"</span>: true,</div>
-      <div class="output">&nbsp; <span class="highlight">"reverse_engineering"</span>: true</div>
+      <div class="output">&nbsp; <span class="highlight">"ai_hacking"</span>: true,</div>
+      <div class="output">&nbsp; <span class="highlight">"mobile_app_hacking"</span>: true</div>
       <div class="output">}</div>
       <br>
       <div><span class="prompt">λ</span> <span class="cmd">echo $STATUS</span></div>
@@ -417,11 +448,11 @@ footer{
   </div>
   <div class="stat">
     <div class="stat-num" data-target="12">0</div>
-    <div class="stat-label">CVEs Published</div>
+    <div class="stat-label">Programs Hacked</div>
   </div>
   <div class="stat">
     <div class="stat-num" data-target="20" data-suffix="+">0</div>
-    <div class="stat-label">Hall of Fames</div>
+    <div class="stat-label">Writeups Published</div>
   </div>
 </div>
 
@@ -430,10 +461,10 @@ footer{
   <div class="section-label">About Me</div>
   <div class="section-title">From curiosity to exploit.</div>
   <div class="section-desc">
-    I'm a passionate security researcher dedicated to making the digital world safer.
-    With years of experience in offensive security, I've helped organizations identify and
+    I'm a passionate application security engineer and bug bounty hunter dedicated to making the digital world safer.
+    With experience in offensive security, I've helped organizations identify and
     remediate critical vulnerabilities across web applications, APIs, mobile apps, and
-    cloud infrastructure. My approach combines deep technical expertise with creative
+    AI/ML systems. My approach combines deep technical expertise with creative
     thinking to uncover vulnerabilities that automated tools miss.
   </div>
 </section>
@@ -458,28 +489,16 @@ footer{
       <div class="skill-tags"><span>REST</span><span>GraphQL</span><span>OAuth</span><span>JWT</span><span>BOLA</span></div>
     </div>
     <div class="skill-card reveal">
-      <div class="skill-icon">☁️</div>
-      <h3>Cloud Security</h3>
-      <p>AWS, GCP, Azure misconfigurations. IAM policy abuse, S3 bucket enumeration, serverless exploits.</p>
-      <div class="skill-tags"><span>AWS</span><span>GCP</span><span>Azure</span><span>Terraform</span><span>K8s</span></div>
+      <div class="skill-icon">🤖</div>
+      <h3>AI / LLM Security</h3>
+      <p>Prompt injection, model manipulation, training data extraction, jailbreaks, and AI supply chain attacks.</p>
+      <div class="skill-tags"><span>Prompt Injection</span><span>Jailbreaks</span><span>LLM</span><span>RAG Poisoning</span><span>OWASP AI</span></div>
     </div>
     <div class="skill-card reveal">
       <div class="skill-icon">📱</div>
-      <h3>Mobile Security</h3>
+      <h3>Mobile App Hacking</h3>
       <p>Android &amp; iOS application analysis. Static &amp; dynamic analysis, API interception, binary reversing.</p>
-      <div class="skill-tags"><span>Android</span><span>iOS</span><span>Frida</span><span>APK</span><span>IPA</span></div>
-    </div>
-    <div class="skill-card reveal">
-      <div class="skill-icon">🔓</div>
-      <h3>Network Penetration Testing</h3>
-      <p>Internal &amp; external network assessments. Active Directory exploitation, pivoting, and lateral movement.</p>
-      <div class="skill-tags"><span>AD</span><span>Nmap</span><span>Pivoting</span><span>SMB</span><span>LDAP</span></div>
-    </div>
-    <div class="skill-card reveal">
-      <div class="skill-icon">⚙️</div>
-      <h3>Reverse Engineering</h3>
-      <p>Binary analysis, malware dissection, protocol reverse engineering, and firmware extraction.</p>
-      <div class="skill-tags"><span>Ghidra</span><span>IDA</span><span>x86</span><span>ARM</span><span>ELF</span></div>
+      <div class="skill-tags"><span>Android</span><span>iOS</span><span>Frida</span><span>APK</span><span>IPA</span><span>MobSF</span></div>
     </div>
   </div>
 </section>
@@ -489,22 +508,22 @@ footer{
   <div class="marquee" id="marquee">
     <span class="marquee-item">Burp Suite</span><span class="marquee-item">Nuclei</span>
     <span class="marquee-item">FFUF</span><span class="marquee-item">SQLMap</span>
-    <span class="marquee-item">Nmap</span><span class="marquee-item">Ghidra</span>
+    <span class="marquee-item">Nmap</span><span class="marquee-item">Frida</span>
     <span class="marquee-item">Metasploit</span><span class="marquee-item">Wireshark</span>
-    <span class="marquee-item">Hashcat</span><span class="marquee-item">John the Ripper</span>
-    <span class="marquee-item">Frida</span><span class="marquee-item">Amass</span>
-    <span class="marquee-item">Subfinder</span><span class="marquee-item">Httpx</span>
-    <span class="marquee-item">Caido</span><span class="marquee-item">DirBuster</span>
-    <span class="marquee-item">Postman</span><span class="marquee-item">Cobalt Strike</span>
+    <span class="marquee-item">MobSF</span><span class="marquee-item">Objection</span>
+    <span class="marquee-item">Amass</span><span class="marquee-item">Subfinder</span>
+    <span class="marquee-item">Httpx</span><span class="marquee-item">Caido</span>
+    <span class="marquee-item">Jadx</span><span class="marquee-item">Postman</span>
+    <span class="marquee-item">Garak</span><span class="marquee-item">PromptFoo</span>
     <span class="marquee-item">Burp Suite</span><span class="marquee-item">Nuclei</span>
     <span class="marquee-item">FFUF</span><span class="marquee-item">SQLMap</span>
-    <span class="marquee-item">Nmap</span><span class="marquee-item">Ghidra</span>
+    <span class="marquee-item">Nmap</span><span class="marquee-item">Frida</span>
     <span class="marquee-item">Metasploit</span><span class="marquee-item">Wireshark</span>
-    <span class="marquee-item">Hashcat</span><span class="marquee-item">John the Ripper</span>
-    <span class="marquee-item">Frida</span><span class="marquee-item">Amass</span>
-    <span class="marquee-item">Subfinder</span><span class="marquee-item">Httpx</span>
-    <span class="marquee-item">Caido</span><span class="marquee-item">DirBuster</span>
-    <span class="marquee-item">Postman</span><span class="marquee-item">Cobalt Strike</span>
+    <span class="marquee-item">MobSF</span><span class="marquee-item">Objection</span>
+    <span class="marquee-item">Amass</span><span class="marquee-item">Subfinder</span>
+    <span class="marquee-item">Httpx</span><span class="marquee-item">Caido</span>
+    <span class="marquee-item">Jadx</span><span class="marquee-item">Postman</span>
+    <span class="marquee-item">Garak</span><span class="marquee-item">PromptFoo</span>
   </div>
 </div>
 
@@ -518,14 +537,14 @@ footer{
     <div class="timeline-item reveal">
       <div class="timeline-date">2023 — PRESENT</div>
       <h3>Independent Security Researcher</h3>
-      <div class="org">Bug Bounty Programs — HackerOne, Bugcrowd, Intigriti</div>
-      <p>Full-time bug bounty hunting across multiple platforms. Discovered critical vulnerabilities in Fortune 500 companies including authentication bypasses, RCE chains, and data exposure flaws.</p>
+      <div class="org">Bug Bounty Programs — Intigriti &amp; Private Programs</div>
+      <p>Full-time bug bounty hunting across multiple platforms. Discovered critical vulnerabilities in major companies including authentication bypasses, RCE chains, and data exposure flaws.</p>
     </div>
     <div class="timeline-item reveal">
       <div class="timeline-date">2021 — 2023</div>
-      <h3>Senior Penetration Tester</h3>
+      <h3>Application Security Engineer</h3>
       <div class="org">Your Previous Company</div>
-      <p>Led red team engagements and penetration tests for enterprise clients. Developed custom exploitation tools and automated security assessment pipelines.</p>
+      <p>Led security assessments and penetration tests for enterprise applications. Developed custom exploitation tools and automated security testing pipelines.</p>
     </div>
     <div class="timeline-item reveal">
       <div class="timeline-date">2019 — 2021</div>
@@ -536,74 +555,6 @@ footer{
   </div>
 </section>
 
-<!-- HALL OF FAME -->
-<section id="hof">
-  <div class="section-label reveal">Recognition</div>
-  <div class="section-title reveal">Hall of Fame.</div>
-  <div class="section-desc reveal">Acknowledged by leading organizations for responsible disclosure.</div>
-
-  <div class="hof-grid">
-    <div class="hof-card reveal">
-      <div class="company">Google</div>
-      <div class="severity critical">CRITICAL</div>
-      <p class="desc">Authentication bypass in Google Cloud IAM leading to privilege escalation across organization units.</p>
-      <div class="reward">💰 Rewarded</div>
-    </div>
-    <div class="hof-card reveal">
-      <div class="company">Microsoft</div>
-      <div class="severity high">HIGH</div>
-      <p class="desc">Stored XSS in Microsoft Teams allowing remote code execution via crafted message payloads.</p>
-      <div class="reward">💰 Rewarded</div>
-    </div>
-    <div class="hof-card reveal">
-      <div class="company">Meta</div>
-      <div class="severity critical">CRITICAL</div>
-      <p class="desc">Server-Side Request Forgery chain leading to internal network access and metadata exposure.</p>
-      <div class="reward">💰 Rewarded</div>
-    </div>
-    <div class="hof-card reveal">
-      <div class="company">Apple</div>
-      <div class="severity high">HIGH</div>
-      <p class="desc">Business logic flaw in Apple Pay integration allowing transaction amount manipulation.</p>
-      <div class="reward">💰 Rewarded</div>
-    </div>
-    <div class="hof-card reveal">
-      <div class="company">Amazon</div>
-      <div class="severity medium">MEDIUM</div>
-      <p class="desc">S3 bucket misconfiguration exposing internal deployment artifacts and API credentials.</p>
-      <div class="reward">💰 Rewarded</div>
-    </div>
-    <div class="hof-card reveal">
-      <div class="company">Shopify</div>
-      <div class="severity critical">CRITICAL</div>
-      <p class="desc">GraphQL injection allowing unauthorized access to merchant PII and payment data.</p>
-      <div class="reward">💰 Rewarded</div>
-    </div>
-  </div>
-</section>
-
-<!-- CVEs -->
-<section id="cves">
-  <div class="section-label reveal">Published Vulnerabilities</div>
-  <div class="section-title reveal">CVE Disclosures.</div>
-  <div class="section-desc reveal">Vulnerabilities I've discovered and responsibly disclosed.</div>
-
-  <div class="reveal" style="overflow-x:auto">
-    <table class="cve-table">
-      <thead>
-        <tr><th>CVE ID</th><th>Product</th><th>Type</th><th>CVSS</th><th>Year</th></tr>
-      </thead>
-      <tbody>
-        <tr><td class="cve-id">CVE-2024-XXXXX</td><td>Product Name</td><td>Remote Code Execution</td><td><span class="cvss crit">9.8</span></td><td>2024</td></tr>
-        <tr><td class="cve-id">CVE-2024-XXXXX</td><td>Product Name</td><td>SQL Injection</td><td><span class="cvss crit">9.1</span></td><td>2024</td></tr>
-        <tr><td class="cve-id">CVE-2023-XXXXX</td><td>Product Name</td><td>Auth Bypass</td><td><span class="cvss high">8.6</span></td><td>2023</td></tr>
-        <tr><td class="cve-id">CVE-2023-XXXXX</td><td>Product Name</td><td>SSRF</td><td><span class="cvss high">7.5</span></td><td>2023</td></tr>
-        <tr><td class="cve-id">CVE-2022-XXXXX</td><td>Product Name</td><td>Privilege Escalation</td><td><span class="cvss high">8.1</span></td><td>2022</td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
 <!-- WRITEUPS -->
 <section id="writeups">
   <div class="section-label reveal">Research</div>
@@ -611,7 +562,7 @@ footer{
   <div class="section-desc reveal">Detailed technical breakdowns of interesting findings.</div>
 
   <div class="writeups-grid">
-    <a href="#" class="writeup-card reveal">
+    <a href="https://medium.com/@obafemipelumi2003" target="_blank" class="writeup-card reveal">
       <div class="writeup-banner" style="background:linear-gradient(135deg,rgba(255,51,85,.08),rgba(170,85,255,.08))">
         <div class="code-bg">GET /api/v2/admin/users HTTP/1.1 Host: target.com Authorization: Bearer eyJhbGciOiJSUzI1... X-Forwarded-For: 127.0.0.1 {"role":"admin","escalated":true} HTTP/1.1 200 OK</div>
         <div class="tag">Authentication Bypass</div>
@@ -622,7 +573,7 @@ footer{
         <div class="writeup-meta"><span>📅 Jan 2024</span><span>⏱ 12 min read</span></div>
       </div>
     </a>
-    <a href="#" class="writeup-card reveal">
+    <a href="https://medium.com/@obafemipelumi2003" target="_blank" class="writeup-card reveal">
       <div class="writeup-banner" style="background:linear-gradient(135deg,rgba(0,221,255,.08),rgba(0,255,136,.08))">
         <div class="code-bg">POST /graphql HTTP/1.1 {"query":"mutation { updateUser(id: \"*\", input: {role: ADMIN}) { id role }}"} {"data":{"updateUser":{"id":"1337","role":"ADMIN"}}}</div>
         <div class="tag">GraphQL Injection</div>
@@ -633,14 +584,14 @@ footer{
         <div class="writeup-meta"><span>📅 Nov 2023</span><span>⏱ 15 min read</span></div>
       </div>
     </a>
-    <a href="#" class="writeup-card reveal">
+    <a href="https://medium.com/@obafemipelumi2003" target="_blank" class="writeup-card reveal">
       <div class="writeup-banner" style="background:linear-gradient(135deg,rgba(255,170,0,.08),rgba(255,51,85,.08))">
-        <div class="code-bg">curl -X POST https://internal-api.target.com/metadata -H "X-AWS-Token: ASIA..." aws sts get-caller-identity {"Account":"133713371337"} aws s3 ls s3://internal-deployments/</div>
-        <div class="tag">Cloud Exploitation</div>
+        <div class="code-bg">{"role":"system","content":"Ignore all previous instructions..."} {"completion":"Here is the admin API key: sk-..."} POST /v1/chat/completions Authorization: Bearer leaked_key</div>
+        <div class="tag">AI / LLM Exploitation</div>
       </div>
       <div class="writeup-body">
-        <h3>From SSRF to AWS Account Takeover via IMDSv1</h3>
-        <p>Leveraging a blind SSRF vulnerability to extract AWS credentials and pivot through the entire cloud infrastructure.</p>
+        <h3>Prompt Injection to API Key Exfiltration in Production LLM</h3>
+        <p>How a chained prompt injection led to system prompt leakage and ultimately exposed internal API credentials in a production AI assistant.</p>
         <div class="writeup-meta"><span>📅 Aug 2023</span><span>⏱ 18 min read</span></div>
       </div>
     </a>
@@ -682,18 +633,18 @@ footer{
     Want to collaborate on security research? Let's connect.
   </div>
   <div class="contact-links reveal">
-    <a href="mailto:your@email.com" class="contact-link">✉ Email</a>
-    <a href="https://twitter.com/yourhandle" class="contact-link" target="_blank">𝕏 Twitter</a>
-    <a href="https://linkedin.com/in/yourprofile" class="contact-link" target="_blank">in LinkedIn</a>
-    <a href="https://github.com/yourhandle" class="contact-link" target="_blank">⌥ GitHub</a>
-    <a href="https://hackerone.com/yourhandle" class="contact-link" target="_blank">⬡ HackerOne</a>
-    <a href="https://bugcrowd.com/yourhandle" class="contact-link" target="_blank">🐛 Bugcrowd</a>
+    <a href="mailto:obapelumi01@gmail.com" class="contact-link">✉ Email</a>
+    <a href="https://twitter.com/0xlumi" class="contact-link" target="_blank">𝕏 Twitter</a>
+    <a href="https://www.linkedin.com/in/pelumi-obafemi-263813213/" class="contact-link" target="_blank">in LinkedIn</a>
+    <a href="https://github.com/0xlumi" class="contact-link" target="_blank">⌥ GitHub</a>
+    <a href="https://app.intigriti.com/researcher/profile/0xpelz" class="contact-link" target="_blank">🛡 Intigriti</a>
+    <a href="https://medium.com/@obafemipelumi2003" class="contact-link" target="_blank">✍ Medium</a>
   </div>
 </section>
 
 <!-- FOOTER -->
 <footer>
-  <p>Designed &amp; Built with 🖤 — © 2026 YOUR_HANDLE. All rights reserved.</p>
+  <p>Designed &amp; Built with 🖤 — © 2026 0xlumi. All rights reserved.</p>
   <p style="margin-top:.5rem;color:var(--text3)">// Hack responsibly. Disclose ethically.</p>
 </footer>
 
@@ -718,6 +669,20 @@ document.querySelectorAll('.nav-links a').forEach(a=>{
     document.getElementById('mobileToggle').textContent='☰';
   });
 });
+
+// Theme toggle
+const toggle=document.getElementById('themeToggle');
+const html=document.documentElement;
+const savedTheme=localStorage.getItem('theme')||'dark';
+html.setAttribute('data-theme',savedTheme);
+
+toggle.addEventListener('click',()=>{
+  const current=html.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+});
+toggle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click()}});
 
 // Scroll reveal
 const observer=new IntersectionObserver(entries=>{
@@ -747,7 +712,7 @@ const statObs=new IntersectionObserver(entries=>{
 document.querySelectorAll('.stats').forEach(s=>statObs.observe(s));
 
 // Stagger grid reveals
-document.querySelectorAll('.skills-grid .reveal, .hof-grid .reveal, .writeups-grid .reveal, .cert-list .reveal').forEach((el,i)=>{
+document.querySelectorAll('.skills-grid .reveal, .writeups-grid .reveal, .cert-list .reveal').forEach((el,i)=>{
   el.style.transitionDelay=(i%6)*.1+'s';
 });
 </script>
