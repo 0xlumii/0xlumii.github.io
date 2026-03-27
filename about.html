@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0xlumi — About</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231d1e20'/><text x='50' y='38' text-anchor='middle' font-family='monospace' font-weight='700' font-size='18' fill='%2300ff88'>0xlumi</text><text x='50' y='58' text-anchor='middle' font-family='sans-serif' font-size='9' fill='%238888a0'>Security</text><text x='50' y='70' text-anchor='middle' font-family='sans-serif' font-size='9' fill='%238888a0'>Researcher</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root,[data-theme="dark"]{
+  --bg:rgb(29,30,32);--bg2:#1e1f23;--bg3:#252629;--bg4:#2c2d31;
+  --text:#e0e0e8;--text2:#8888a0;--text3:#555570;
+  --accent:#00ff88;--accent2:#00cc6a;--accent-glow:rgba(0,255,136,.15);
+  --red:#ff3355;--amber:#ffaa00;--cyan:#00ddff;--purple:#aa55ff;
+  --border-color:rgba(255,255,255,.06);
+  --nav-bg:rgba(29,30,32,.85);
+  --scanline:rgba(0,0,0,.03);
+  --glow-color:rgba(0,255,136,.04);
+  --card-hover:rgba(0,255,136,.15);
+  --selection-bg:var(--accent);--selection-color:var(--bg);
+  --tag-bg:rgba(0,255,136,.08);--tag-border:rgba(0,255,136,.1);
+  --contact-hover-bg:rgba(0,255,136,.03);
+  --terminal-shadow:none;
+}
+
+[data-theme="light"]{
+  --bg:#f5f5f0;--bg2:#ffffff;--bg3:#eeeee8;--bg4:#e0e0d8;
+  --text:#1a1a2e;--text2:#555570;--text3:#8888a0;
+  --accent:#00994d;--accent2:#007a3d;--accent-glow:rgba(0,153,77,.1);
+  --red:#cc2244;--amber:#cc8800;--cyan:#0099bb;--purple:#7733cc;
+  --border-color:rgba(0,0,0,.08);
+  --nav-bg:rgba(245,245,240,.85);
+  --scanline:rgba(0,0,0,.01);
+  --glow-color:rgba(0,153,77,.03);
+  --card-hover:rgba(0,153,77,.12);
+  --selection-bg:var(--accent);--selection-color:#fff;
+  --tag-bg:rgba(0,153,77,.08);--tag-border:rgba(0,153,77,.15);
+  --contact-hover-bg:rgba(0,153,77,.05);
+  --terminal-shadow:0 8px 32px rgba(0,0,0,.1);
+}
+
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--bg4) var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+::selection{background:var(--selection-bg);color:var(--selection-color)}
+
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline) 2px,var(--scanline) 4px);
+}
+.cursor-glow{
+  position:fixed;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,var(--glow-color) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity .3s;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1rem 2rem;
+  background:var(--nav-bg);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:space-between;
+  transition:transform .3s,background .4s;
+}
+nav.hidden{transform:translateY(-100%)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text2);
+  text-decoration:none;letter-spacing:.08em;text-transform:uppercase;
+  transition:color .2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;
+  background:var(--accent);transition:width .3s;
+}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a:hover::after{width:100%}
+.nav-links a.active{color:var(--accent)}
+.nav-links a.active::after{width:100%}
+
+.theme-toggle{
+  display:flex;align-items:center;cursor:pointer;
+  background:var(--bg3);border:1px solid var(--border-color);
+  border-radius:100px;padding:4px;width:52px;height:28px;
+  position:relative;transition:all .3s;
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.toggle-thumb{
+  width:20px;height:20px;border-radius:50%;background:var(--accent);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"] .toggle-thumb{transform:translateX(24px)}
+.toggle-icon-dark,.toggle-icon-light{
+  position:absolute;top:50%;transform:translateY(-50%);
+  font-size:12px;pointer-events:none;transition:opacity .3s;
+}
+.toggle-icon-dark{left:8px}
+.toggle-icon-light{right:7px}
+[data-theme="dark"] .toggle-icon-dark{opacity:1}
+[data-theme="dark"] .toggle-icon-light{opacity:.3}
+[data-theme="light"] .toggle-icon-dark{opacity:.3}
+[data-theme="light"] .toggle-icon-light{opacity:1}
+
+.mobile-toggle{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.4rem}
+.nav-right{display:flex;align-items:center;gap:1rem}
+
+/* BACK BUTTON */
+.back-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text2);
+  text-decoration:none;margin-bottom:2rem;padding:.5rem 0;
+  transition:color .2s;
+}
+.back-btn:hover{color:var(--accent)}
+.back-btn svg{width:16px;height:16px;stroke:currentColor;transition:transform .2s}
+.back-btn:hover svg{transform:translateX(-3px)}
+
+/* ABOUT PAGE */
+.about-page{max-width:760px;margin:0 auto;padding:8rem 4rem 4rem}
+.about-header{margin-bottom:3rem}
+.about-header h1{
+  font-size:clamp(2.5rem,5vw,4rem);font-weight:800;letter-spacing:-.04em;margin-bottom:.5rem;
+}
+.about-header h1 .accent{color:var(--accent)}
+.about-header p{color:var(--text2);font-size:1.1rem;font-weight:300}
+
+.about-content{margin-bottom:3rem}
+.about-content p{
+  font-size:1.05rem;color:var(--text2);line-height:1.8;margin-bottom:1.5rem;font-weight:300;
+}
+.about-content p strong{color:var(--text);font-weight:500}
+
+/* TERMINAL */
+.about-terminal{
+  max-width:100%;background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
+  overflow:hidden;box-shadow:var(--terminal-shadow);margin-bottom:3rem;
+}
+.terminal-bar{
+  display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;
+  background:var(--bg3);border-bottom:1px solid var(--border-color);
+}
+.terminal-dot{width:10px;height:10px;border-radius:50%}
+.terminal-dot.r{background:var(--red)}.terminal-dot.y{background:var(--amber)}.terminal-dot.g{background:var(--accent)}
+.terminal-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);margin-left:auto}
+.terminal-body{padding:1.2rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.8}
+.terminal-body .prompt{color:var(--accent)}
+.terminal-body .cmd{color:var(--text)}
+.terminal-body .output{color:var(--text2)}
+.terminal-body .highlight{color:var(--cyan)}
+.terminal-body .warn{color:var(--amber)}
+.type-cursor{display:inline-block;width:7px;height:14px;background:var(--accent);animation:blink 1s step-end infinite;vertical-align:middle;margin-left:2px}
+@keyframes blink{50%{opacity:0}}
+
+/* WHAT I FOCUS ON */
+.focus-section{margin-bottom:3rem}
+.focus-section h2{
+  font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin-bottom:1.5rem;
+}
+.focus-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem}
+.focus-item{
+  background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
+  padding:1.5rem;transition:all .3s;
+}
+.focus-item:hover{border-color:var(--card-hover);transform:translateY(-2px)}
+.focus-item h3{font-size:.95rem;font-weight:600;margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.focus-item p{font-size:.8rem;color:var(--text2);line-height:1.6}
+
+/* TIMELINE */
+.timeline-section{margin-bottom:3rem}
+.timeline-section h2{
+  font-size:1.6rem;font-weight:700;letter-spacing:-.02em;margin-bottom:1.5rem;
+}
+.timeline{position:relative;padding-left:2rem}
+.timeline::before{
+  content:'';position:absolute;left:0;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,var(--accent),var(--bg3));
+}
+.timeline-item{position:relative;margin-bottom:2rem}
+.timeline-item:last-child{margin-bottom:0}
+.timeline-item::before{
+  content:'';position:absolute;left:-2rem;top:.4rem;
+  width:7px;height:7px;border-radius:50%;background:var(--accent);
+  box-shadow:0 0 10px var(--accent-glow);transform:translateX(-3px);
+}
+.timeline-date{
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--accent);
+  letter-spacing:.1em;margin-bottom:.3rem;
+}
+.timeline-item h3{font-size:1rem;font-weight:600;margin-bottom:.15rem}
+.timeline-item .org{font-size:.85rem;color:var(--text3);margin-bottom:.4rem}
+.timeline-item p{font-size:.85rem;color:var(--text2);line-height:1.6}
+
+/* FOOTER */
+footer{
+  text-align:center;padding:3rem 4rem 2rem;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);
+  border-top:1px solid var(--border-color);transition:border-color .4s;
+}
+.footer-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.footer-icon{
+  padding:.7rem 1.4rem;border-radius:8px;border:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  text-decoration:none;color:var(--text2);font-size:.85rem;
+  font-family:'JetBrains Mono',monospace;transition:all .3s;
+}
+.footer-icon:hover{border-color:var(--accent);color:var(--accent);background:var(--contact-hover-bg)}
+
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .nav-links{
+    display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+    background:var(--bg);flex-direction:column;
+    align-items:center;justify-content:center;gap:2rem;z-index:200;opacity:.98;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:1rem}
+  .mobile-toggle{display:block;z-index:300}
+  .about-page{padding:7rem 2rem 3rem}
+  .nav-right{gap:.6rem}
+  .focus-grid{grid-template-columns:1fr}
+}
+@media(max-width:480px){
+  .about-page{padding:6rem 1.5rem 2rem}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="glow"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">&gt; 0xlumi</a>
+  <div class="nav-links" id="navLinks">
+    <a href="about.html" class="active">About</a>
+    <a href="blog.html">Blog</a>
+  </div>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme" tabindex="0">
+      <span class="toggle-icon-dark">🌙</span>
+      <span class="toggle-icon-light">☀️</span>
+      <div class="toggle-thumb"></div>
+    </div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<div class="about-page">
+
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Back to Home
+  </a>
+
+  <!-- HEADER -->
+  <div class="about-header reveal">
+    <h1>About <span class="accent">me.</span></h1>
+    <p>The story behind the bugs.</p>
+  </div>
+
+  <!-- INTRO -->
+  <div class="about-content reveal">
+    <p>
+      I'm <strong>0xlumi</strong> — an application security engineer and bug bounty hunter
+      based in Nigeria. I spend my days breaking into applications so that real attackers can't.
+    </p>
+    <p>
+      My journey into security started with curiosity — taking things apart to understand how
+      they work, then figuring out how they break. That curiosity turned into a career built
+      around <strong>finding vulnerabilities</strong> that automated tools miss and helping
+      organizations fix them before they become headlines.
+    </p>
+    <p>
+      I specialize in <strong>web application security</strong>, <strong>API exploitation</strong>,
+      <strong>AI/LLM security</strong>, and <strong>mobile app hacking</strong>. Whether it's
+      chaining low-severity bugs into critical exploits or auditing the latest AI-powered features,
+      I approach every target with the same mindset: think like an attacker, report like a professional.
+    </p>
+  </div>
+
+  <!-- TERMINAL -->
+  <div class="about-terminal reveal">
+    <div class="terminal-bar">
+      <span class="terminal-dot r"></span>
+      <span class="terminal-dot y"></span>
+      <span class="terminal-dot g"></span>
+      <span class="terminal-title">~/0xlumi — zsh</span>
+    </div>
+    <div class="terminal-body">
+      <div><span class="prompt">λ</span> <span class="cmd">whoami</span></div>
+      <div class="output">0xlumi // appsec_engineer // bug_bounty_hunter</div>
+      <br>
+      <div><span class="prompt">λ</span> <span class="cmd">cat skills.json</span></div>
+      <div class="output">{</div>
+      <div class="output">&nbsp; <span class="highlight">"web_app_pentest"</span>: true,</div>
+      <div class="output">&nbsp; <span class="highlight">"api_security"</span>: true,</div>
+      <div class="output">&nbsp; <span class="highlight">"ai_hacking"</span>: true,</div>
+      <div class="output">&nbsp; <span class="highlight">"mobile_app_hacking"</span>: true</div>
+      <div class="output">}</div>
+      <br>
+      <div><span class="prompt">λ</span> <span class="cmd">echo $STATUS</span></div>
+      <div class="output"><span class="warn">⚡ Currently hunting bugs</span></div>
+      <br>
+      <div><span class="prompt">λ</span> <span class="type-cursor"></span></div>
+    </div>
+  </div>
+
+  <!-- WHAT I FOCUS ON -->
+  <div class="focus-section reveal">
+    <h2>What I focus on.</h2>
+    <div class="focus-grid">
+      <div class="focus-item">
+        <h3>🌐 Web AppSec</h3>
+        <p>OWASP Top 10, business logic, auth bypasses, and complex attack chains.</p>
+      </div>
+      <div class="focus-item">
+        <h3>🔗 API Security</h3>
+        <p>REST, GraphQL, OAuth, JWT abuse, broken access control.</p>
+      </div>
+      <div class="focus-item">
+        <h3>🤖 AI Hacking</h3>
+        <p>Prompt injection, jailbreaks, RAG poisoning, LLM supply chain attacks.</p>
+      </div>
+      <div class="focus-item">
+        <h3>📱 Mobile Apps</h3>
+        <p>Android &amp; iOS reversing, Frida hooking, API interception.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline-section reveal">
+    <h2>The journey.</h2>
+    <div class="timeline">
+      <div class="timeline-item">
+        <div class="timeline-date">2023 — PRESENT</div>
+        <h3>Independent Security Researcher</h3>
+        <div class="org">Bug Bounty — Intigriti &amp; Private Programs</div>
+        <p>Full-time bug bounty hunting. Discovering critical vulnerabilities in production applications across multiple industries.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2021 — 2023</div>
+        <h3>Application Security Engineer</h3>
+        <div class="org">Your Previous Company</div>
+        <p>Security assessments, penetration testing, and building automated security pipelines for enterprise applications.</p>
+      </div>
+      <div class="timeline-item">
+        <div class="timeline-date">2019 — 2021</div>
+        <h3>Security Analyst</h3>
+        <div class="org">Your First Role</div>
+        <p>Vulnerability assessments, code reviews, incident response, and internal security tooling.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://www.linkedin.com/in/pelumi-obafemi-263813213/" class="footer-icon" target="_blank">in LinkedIn</a>
+    <a href="https://app.intigriti.com/researcher/profile/0xpelz" class="footer-icon" target="_blank">🛡 Intigriti</a>
+    <a href="https://medium.com/@obafemipelumi2003" class="footer-icon" target="_blank">✍ Medium</a>
+  </div>
+  <p style="margin-top:1.2rem">Designed &amp; Built with 🖤 — © 2026 0xlumi. All rights reserved.</p>
+  <p style="margin-top:.5rem;color:var(--text3)">// Keep hacking. Keep Evolving.</p>
+</footer>
+
+<script>
+const glow=document.getElementById('glow');
+document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
+
+let lastScroll=0;const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{const c=window.scrollY;nav.classList.toggle('hidden',c>lastScroll&&c>80);lastScroll=c});
+
+document.getElementById('mobileToggle').addEventListener('click',()=>{
+  const nl=document.getElementById('navLinks');
+  nl.classList.toggle('open');
+  document.getElementById('mobileToggle').textContent=nl.classList.contains('open')?'✕':'☰';
+});
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('mobileToggle').textContent='☰';
+  });
+});
+
+const toggle=document.getElementById('themeToggle');
+const html=document.documentElement;
+const savedTheme=localStorage.getItem('theme')||'dark';
+html.setAttribute('data-theme',savedTheme);
+toggle.addEventListener('click',()=>{
+  const current=html.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+});
+toggle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click()}});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
