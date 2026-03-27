@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>0xlumi — Blog</title>
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='16' fill='%231d1e20'/><text x='50' y='38' text-anchor='middle' font-family='monospace' font-weight='700' font-size='18' fill='%2300ff88'>0xlumi</text><text x='50' y='58' text-anchor='middle' font-family='sans-serif' font-size='9' fill='%238888a0'>Security</text><text x='50' y='70' text-anchor='middle' font-family='sans-serif' font-size='9' fill='%238888a0'>Researcher</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root,[data-theme="dark"]{
+  --bg:rgb(29,30,32);--bg2:#1e1f23;--bg3:#252629;--bg4:#2c2d31;
+  --text:#e0e0e8;--text2:#8888a0;--text3:#555570;
+  --accent:#00ff88;--accent2:#00cc6a;--accent-glow:rgba(0,255,136,.15);
+  --red:#ff3355;--amber:#ffaa00;--cyan:#00ddff;--purple:#aa55ff;
+  --border-color:rgba(255,255,255,.06);
+  --nav-bg:rgba(29,30,32,.85);
+  --scanline:rgba(0,0,0,.03);
+  --glow-color:rgba(0,255,136,.04);
+  --card-hover:rgba(0,255,136,.15);
+  --selection-bg:var(--accent);--selection-color:var(--bg);
+  --tag-bg:rgba(0,255,136,.08);--tag-border:rgba(0,255,136,.1);
+  --contact-hover-bg:rgba(0,255,136,.03);
+}
+
+[data-theme="light"]{
+  --bg:#f5f5f0;--bg2:#ffffff;--bg3:#eeeee8;--bg4:#e0e0d8;
+  --text:#1a1a2e;--text2:#555570;--text3:#8888a0;
+  --accent:#00994d;--accent2:#007a3d;--accent-glow:rgba(0,153,77,.1);
+  --red:#cc2244;--amber:#cc8800;--cyan:#0099bb;--purple:#7733cc;
+  --border-color:rgba(0,0,0,.08);
+  --nav-bg:rgba(245,245,240,.85);
+  --scanline:rgba(0,0,0,.01);
+  --glow-color:rgba(0,153,77,.03);
+  --card-hover:rgba(0,153,77,.12);
+  --selection-bg:var(--accent);--selection-color:#fff;
+  --tag-bg:rgba(0,153,77,.08);--tag-border:rgba(0,153,77,.15);
+  --contact-hover-bg:rgba(0,153,77,.05);
+}
+
+html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--bg4) var(--bg)}
+body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+::selection{background:var(--selection-bg);color:var(--selection-color)}
+
+body::after{
+  content:'';position:fixed;inset:0;pointer-events:none;z-index:9999;
+  background:repeating-linear-gradient(0deg,transparent,transparent 2px,var(--scanline) 2px,var(--scanline) 4px);
+}
+
+.cursor-glow{
+  position:fixed;width:600px;height:600px;border-radius:50%;pointer-events:none;z-index:1;
+  background:radial-gradient(circle,var(--glow-color) 0%,transparent 70%);
+  transform:translate(-50%,-50%);transition:opacity .3s;
+}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:1rem 2rem;
+  background:var(--nav-bg);backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:space-between;
+  transition:transform .3s,background .4s;
+}
+nav.hidden{transform:translateY(-100%)}
+.nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
+.nav-links{display:flex;gap:2rem;align-items:center}
+.nav-links a{
+  font-family:'JetBrains Mono',monospace;font-size:.75rem;color:var(--text2);
+  text-decoration:none;letter-spacing:.08em;text-transform:uppercase;
+  transition:color .2s;position:relative;
+}
+.nav-links a::after{
+  content:'';position:absolute;bottom:-4px;left:0;width:0;height:1px;
+  background:var(--accent);transition:width .3s;
+}
+.nav-links a:hover{color:var(--accent)}
+.nav-links a:hover::after{width:100%}
+.nav-links a.active{color:var(--accent)}
+.nav-links a.active::after{width:100%}
+
+.theme-toggle{
+  display:flex;align-items:center;cursor:pointer;
+  background:var(--bg3);border:1px solid var(--border-color);
+  border-radius:100px;padding:4px;width:52px;height:28px;
+  position:relative;transition:all .3s;
+}
+.theme-toggle:hover{border-color:var(--accent)}
+.toggle-thumb{
+  width:20px;height:20px;border-radius:50%;background:var(--accent);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+[data-theme="light"] .toggle-thumb{transform:translateX(24px)}
+.toggle-icon-dark,.toggle-icon-light{
+  position:absolute;top:50%;transform:translateY(-50%);
+  font-size:12px;pointer-events:none;transition:opacity .3s;
+}
+.toggle-icon-dark{left:8px}
+.toggle-icon-light{right:7px}
+[data-theme="dark"] .toggle-icon-dark{opacity:1}
+[data-theme="dark"] .toggle-icon-light{opacity:.3}
+[data-theme="light"] .toggle-icon-dark{opacity:.3}
+[data-theme="light"] .toggle-icon-light{opacity:1}
+
+.mobile-toggle{display:none;background:none;border:none;color:var(--text);cursor:pointer;font-size:1.4rem}
+.nav-right{display:flex;align-items:center;gap:1rem}
+
+/* BACK BUTTON */
+.back-btn{
+  display:inline-flex;align-items:center;gap:.5rem;
+  font-family:'JetBrains Mono',monospace;font-size:.8rem;color:var(--text2);
+  text-decoration:none;margin-bottom:2rem;padding:.5rem 0;
+  transition:color .2s;
+}
+.back-btn:hover{color:var(--accent)}
+.back-btn svg{width:16px;height:16px;stroke:currentColor;transition:transform .2s}
+.back-btn:hover svg{transform:translateX(-3px)}
+
+/* BLOG HEADER */
+.blog-header{
+  padding:8rem 4rem 3rem;max-width:900px;margin:0 auto;
+}
+.blog-header h1{
+  font-size:clamp(2.5rem,5vw,4rem);font-weight:800;letter-spacing:-.04em;
+  margin-bottom:.5rem;
+}
+.blog-header h1 .accent{color:var(--accent)}
+.blog-header p{color:var(--text2);font-size:1.1rem;font-weight:300}
+
+/* BLOG POSTS */
+.blog-list{
+  max-width:900px;margin:0 auto;padding:0 4rem 4rem;
+}
+.blog-post{
+  display:block;text-decoration:none;color:inherit;
+  padding:2rem 0;border-bottom:1px solid var(--border-color);
+  transition:all .3s;position:relative;
+}
+.blog-post:first-child{border-top:1px solid var(--border-color)}
+.blog-post:hover{padding-left:1rem}
+.blog-post:hover .blog-post-title{color:var(--accent)}
+.blog-post-date{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);
+  letter-spacing:.1em;margin-bottom:.5rem;display:flex;align-items:center;gap:1rem;
+}
+.blog-post-tag{
+  font-family:'JetBrains Mono',monospace;font-size:.6rem;color:var(--text3);
+  padding:.2rem .5rem;border-radius:4px;
+  background:var(--tag-bg);border:1px solid var(--tag-border);
+  color:var(--accent);
+}
+.blog-post-title{
+  font-size:1.3rem;font-weight:600;margin-bottom:.4rem;transition:color .3s;line-height:1.4;
+}
+.blog-post-excerpt{
+  font-size:.9rem;color:var(--text2);line-height:1.6;max-width:700px;
+}
+.blog-post-read{
+  font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--text3);
+  margin-top:.6rem;display:flex;align-items:center;gap:.3rem;
+}
+
+/* FOOTER */
+footer{
+  text-align:center;padding:3rem 4rem 2rem;
+  font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);
+  border-top:1px solid var(--border-color);transition:border-color .4s;
+}
+.footer-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;margin-bottom:1.5rem}
+.footer-icon{
+  padding:.7rem 1.4rem;border-radius:8px;border:1px solid var(--border-color);
+  display:flex;align-items:center;justify-content:center;gap:.5rem;
+  text-decoration:none;color:var(--text2);font-size:.85rem;
+  font-family:'JetBrains Mono',monospace;transition:all .3s;
+}
+.footer-icon:hover{border-color:var(--accent);color:var(--accent);background:var(--contact-hover-bg)}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s cubic-bezier(.16,1,.3,1)}
+.reveal.visible{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .nav-links{
+    display:none;position:fixed;top:0;left:0;right:0;bottom:0;
+    background:var(--bg);flex-direction:column;
+    align-items:center;justify-content:center;gap:2rem;z-index:200;opacity:.98;
+  }
+  .nav-links.open{display:flex}
+  .nav-links a{font-size:1rem}
+  .mobile-toggle{display:block;z-index:300}
+  .blog-header{padding:7rem 2rem 2rem}
+  .blog-list{padding:0 2rem 3rem}
+  .nav-right{gap:.6rem}
+}
+@media(max-width:480px){
+  .blog-header{padding:6rem 1.5rem 2rem}
+  .blog-list{padding:0 1.5rem 3rem}
+}
+</style>
+</head>
+<body>
+
+<div class="cursor-glow" id="glow"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="index.html" class="nav-logo">&gt; 0xlumi</a>
+  <div class="nav-links" id="navLinks">
+    <a href="about.html">About</a>
+    <a href="blog.html" class="active">Blog</a>
+  </div>
+  <div class="nav-right">
+    <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle theme" tabindex="0">
+      <span class="toggle-icon-dark">🌙</span>
+      <span class="toggle-icon-light">☀️</span>
+      <div class="toggle-thumb"></div>
+    </div>
+    <button class="mobile-toggle" id="mobileToggle" aria-label="Menu">☰</button>
+  </div>
+</nav>
+
+<!-- BLOG HEADER -->
+<div class="blog-header reveal">
+  <a href="index.html" class="back-btn">
+    <svg viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+    Back to Home
+  </a>
+  <h1>The <span class="accent">Blog.</span></h1>
+  <p>Thoughts on security, hacking, and everything in between.</p>
+</div>
+
+<!-- BLOG POSTS -->
+<div class="blog-list">
+
+  <!--
+  ╔══════════════════════════════════════════════════════════════╗
+  ║  HOW TO ADD A NEW BLOG POST:                                ║
+  ║                                                              ║
+  ║  1. Copy the <a class="blog-post"> block below               ║
+  ║  2. Paste it at the TOP of this blog-list div                ║
+  ║  3. Update the date, tag, title, excerpt                     ║
+  ║  4. Set the href to your blog post URL or a local .html file ║
+  ║                                                              ║
+  ║  For a full blog post page, duplicate blog-post-template.html║
+  ║  and write your content there.                               ║
+  ╚══════════════════════════════════════════════════════════════╝
+  -->
+
+  <a href="#" class="blog-post reveal">
+    <div class="blog-post-date">
+      March 15, 2026
+      <span class="blog-post-tag">AI Security</span>
+    </div>
+    <div class="blog-post-title">Why Every Bug Bounty Hunter Should Learn AI Hacking in 2026</div>
+    <p class="blog-post-excerpt">
+      AI is everywhere now — and so are the vulnerabilities. Here's why prompt injection,
+      model manipulation, and LLM security testing should be in every hunter's toolkit.
+    </p>
+    <div class="blog-post-read">Read more →</div>
+  </a>
+
+  <a href="#" class="blog-post reveal">
+    <div class="blog-post-date">
+      February 28, 2026
+      <span class="blog-post-tag">Bug Bounty</span>
+    </div>
+    <div class="blog-post-title">How I Approach a New Target: My Recon Methodology</div>
+    <p class="blog-post-excerpt">
+      Breaking down my step-by-step process when I first look at a new bug bounty program —
+      from subdomain enumeration to identifying the juiciest attack surfaces.
+    </p>
+    <div class="blog-post-read">Read more →</div>
+  </a>
+
+  <a href="#" class="blog-post reveal">
+    <div class="blog-post-date">
+      January 10, 2026
+      <span class="blog-post-tag">Mobile Security</span>
+    </div>
+    <div class="blog-post-title">Bypassing Certificate Pinning on Android in 2026</div>
+    <p class="blog-post-excerpt">
+      The landscape of certificate pinning keeps evolving. Here are the techniques
+      that still work and the new approaches you need to know about.
+    </p>
+    <div class="blog-post-read">Read more →</div>
+  </a>
+
+  <a href="#" class="blog-post reveal">
+    <div class="blog-post-date">
+      December 5, 2025
+      <span class="blog-post-tag">AppSec</span>
+    </div>
+    <div class="blog-post-title">The Underrated Art of Business Logic Vulnerabilities</div>
+    <p class="blog-post-excerpt">
+      Scanners can't find them. WAFs can't block them. Business logic bugs remain
+      one of the most impactful and least understood vulnerability classes.
+    </p>
+    <div class="blog-post-read">Read more →</div>
+  </a>
+
+  <a href="#" class="blog-post reveal">
+    <div class="blog-post-date">
+      November 18, 2025
+      <span class="blog-post-tag">Career</span>
+    </div>
+    <div class="blog-post-title">From Zero to Bug Bounty: My Journey Into Security Research</div>
+    <p class="blog-post-excerpt">
+      How I went from knowing nothing about security to finding critical bugs
+      in production applications. The resources, the failures, and the lessons learned.
+    </p>
+    <div class="blog-post-read">Read more →</div>
+  </a>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-links">
+    <a href="https://www.linkedin.com/in/pelumi-obafemi-263813213/" class="footer-icon" target="_blank">in LinkedIn</a>
+    <a href="https://app.intigriti.com/researcher/profile/0xpelz" class="footer-icon" target="_blank">🛡 Intigriti</a>
+    <a href="https://medium.com/@obafemipelumi2003" class="footer-icon" target="_blank">✍ Medium</a>
+  </div>
+  <p style="margin-top:1.2rem">Designed &amp; Built with 🖤 — © 2026 0xlumi. All rights reserved.</p>
+  <p style="margin-top:.5rem;color:var(--text3)">// Keep hacking. Keep Evolving.</p>
+</footer>
+
+<script>
+const glow=document.getElementById('glow');
+document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
+
+let lastScroll=0;const nav=document.getElementById('nav');
+window.addEventListener('scroll',()=>{const c=window.scrollY;nav.classList.toggle('hidden',c>lastScroll&&c>80);lastScroll=c});
+
+document.getElementById('mobileToggle').addEventListener('click',()=>{
+  const nl=document.getElementById('navLinks');
+  nl.classList.toggle('open');
+  document.getElementById('mobileToggle').textContent=nl.classList.contains('open')?'✕':'☰';
+});
+document.querySelectorAll('.nav-links a').forEach(a=>{
+  a.addEventListener('click',()=>{
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('mobileToggle').textContent='☰';
+  });
+});
+
+const toggle=document.getElementById('themeToggle');
+const html=document.documentElement;
+const savedTheme=localStorage.getItem('theme')||'dark';
+html.setAttribute('data-theme',savedTheme);
+toggle.addEventListener('click',()=>{
+  const current=html.getAttribute('data-theme');
+  const next=current==='dark'?'light':'dark';
+  html.setAttribute('data-theme',next);
+  localStorage.setItem('theme',next);
+});
+toggle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click()}});
+
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
+},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+</script>
+</body>
+</html>
