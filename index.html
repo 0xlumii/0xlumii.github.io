@@ -174,8 +174,18 @@ nav.hidden{transform:translateY(-100%)}
   display:flex;align-items:center;gap:.5rem;padding:.75rem 1rem;
   background:var(--bg3);border-bottom:1px solid var(--border-color);
 }
-.terminal-dot{width:10px;height:10px;border-radius:50%}
-.terminal-dot.r{background:var(--red)}.terminal-dot.y{background:var(--amber)}.terminal-dot.g{background:var(--accent)}
+.terminal-dot{width:12px;height:12px;border-radius:50%;position:relative;cursor:default}
+.terminal-dot.r{background:#ff5f57}
+.terminal-dot.y{background:#febc2e}
+.terminal-dot.g{background:#28c840}
+.terminal-dot svg{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:8px;height:8px;opacity:0;transition:opacity .15s;
+}
+.terminal-bar:hover .terminal-dot svg{opacity:1}
+.terminal-dot.r svg{stroke:#820005;stroke-width:1.5}
+.terminal-dot.y svg{stroke:#6e5600;stroke-width:1.5}
+.terminal-dot.g svg{stroke:#045207;stroke-width:1.5}
 .terminal-title{font-family:'JetBrains Mono',monospace;font-size:.65rem;color:var(--text3);margin-left:auto}
 .terminal-body{padding:1.2rem;font-family:'JetBrains Mono',monospace;font-size:.75rem;line-height:1.8}
 .terminal-body .prompt{color:var(--accent)}
@@ -199,6 +209,7 @@ section{padding:6rem 4rem;position:relative}
 .section-desc{color:var(--text2);font-size:1.05rem;max-width:600px;line-height:1.7;margin-bottom:3rem;font-weight:300}
 
 /* WHOAMI TERMINAL */
+.terminal-section{padding:0 4rem 4rem}
 .whoami-terminal{
   max-width:520px;background:var(--bg2);border:1px solid var(--border-color);border-radius:12px;
   overflow:hidden;box-shadow:var(--terminal-shadow);margin-top:1rem;
@@ -233,9 +244,9 @@ footer{
 
 /* RESPONSIVE */
 @media(max-width:1024px){
-  .hero-terminal{display:none}
   .hero{padding:7rem 2rem 4rem}
   section{padding:4rem 2rem}
+  .terminal-section{padding:0 2rem 3rem}
 }
 @media(max-width:768px){
   .nav-links{
@@ -254,6 +265,7 @@ footer{
 @media(max-width:480px){
   .hero{padding:6rem 1.5rem 3rem}
   section{padding:3rem 1.5rem}
+  .terminal-section{padding:0 1.5rem 2rem}
   .skills-grid,.writeups-grid{grid-template-columns:1fr}
 }
 </style>
@@ -293,50 +305,15 @@ footer{
     </div>
   </div>
 
-  <div class="hero-terminal">
-    <div class="terminal-bar">
-      <span class="terminal-dot r"></span>
-      <span class="terminal-dot y"></span>
-      <span class="terminal-dot g"></span>
-      <span class="terminal-title">~/security — zsh</span>
-    </div>
-    <div class="terminal-body">
-      <div><span class="prompt">λ</span> <span class="cmd">whoami</span></div>
-      <div class="output">0xlumi // appsec_engineer // bug_bounty_hunter</div>
-      <br>
-      <div><span class="prompt">λ</span> <span class="cmd">cat skills.json</span></div>
-      <div class="output">{</div>
-      <div class="output">&nbsp; <span class="highlight">"web_app_pentest"</span>: true,</div>
-      <div class="output">&nbsp; <span class="highlight">"api_security"</span>: true,</div>
-      <div class="output">&nbsp; <span class="highlight">"ai_hacking"</span>: true,</div>
-      <div class="output">&nbsp; <span class="highlight">"mobile_app_hacking"</span>: true</div>
-      <div class="output">}</div>
-      <br>
-      <div><span class="prompt">λ</span> <span class="cmd">echo $STATUS</span></div>
-      <div class="output"><span class="warn">⚡ Currently hunting bugs</span></div>
-      <br>
-      <div><span class="prompt">λ</span> <span class="type-cursor"></span></div>
-    </div>
-  </div>
 </section>
 
-<!-- ABOUT -->
-<section id="about" class="reveal">
-  <div class="section-label">About Me</div>
-  <div class="section-title">From curiosity to exploit.</div>
-  <div class="section-desc">
-    I'm a passionate application security engineer and bug bounty hunter dedicated to making the digital world safer.
-    With experience in offensive security, I've helped organizations identify and
-    remediate critical vulnerabilities across web applications, APIs, mobile apps, and
-    AI/ML systems. My approach combines deep technical expertise with creative
-    thinking to uncover vulnerabilities that automated tools miss.
-  </div>
-
+<!-- WHOAMI TERMINAL -->
+<section class="terminal-section reveal">
   <div class="whoami-terminal">
     <div class="terminal-bar">
-      <span class="terminal-dot r"></span>
-      <span class="terminal-dot y"></span>
-      <span class="terminal-dot g"></span>
+      <span class="terminal-dot r"><svg viewBox="0 0 12 12" fill="none"><line x1="3" y1="3" x2="9" y2="9"/><line x1="9" y1="3" x2="3" y2="9"/></svg></span>
+      <span class="terminal-dot y"><svg viewBox="0 0 12 12" fill="none"><line x1="2" y1="6" x2="10" y2="6"/></svg></span>
+      <span class="terminal-dot g"><svg viewBox="0 0 12 12" fill="none"><polyline points="2,4 6,8 10,4" fill="none"/></svg></span>
       <span class="terminal-title">~/0xlumi — zsh</span>
     </div>
     <div class="terminal-body">
