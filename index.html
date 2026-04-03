@@ -44,8 +44,14 @@
   --terminal-shadow:0 8px 32px rgba(0,0,0,.1);
 }
 
-html{scroll-behavior:smooth;scrollbar-width:thin;scrollbar-color:var(--bg4) var(--bg)}
+html{scrollbar-width:thin;scrollbar-color:var(--bg4) var(--bg);scroll-behavior:initial}
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
 body{background:var(--bg);color:var(--text);font-family:'Outfit',sans-serif;overflow-x:hidden;-webkit-font-smoothing:antialiased;transition:background .4s,color .4s}
+*{-webkit-tap-highlight-color:transparent}
+a,button,[role="button"]{transition:all .3s cubic-bezier(.25,.46,.45,.94)}
 ::selection{background:var(--selection-bg);color:var(--selection-color)}
 
 body::after{
@@ -63,9 +69,9 @@ nav{
   background:var(--nav-bg);backdrop-filter:blur(20px);
   border-bottom:1px solid var(--border-color);
   display:flex;align-items:center;justify-content:space-between;
-  transition:transform .3s,background .4s;
+  transition:transform .5s cubic-bezier(.16,1,.3,1),background .4s;
 }
-nav.hidden{transform:translateY(-100%)}
+nav.hidden{transform:translateY(-110%)}
 .nav-logo{font-family:'JetBrains Mono',monospace;font-weight:700;font-size:1.1rem;color:var(--accent);letter-spacing:-.02em;text-decoration:none}
 .nav-links{display:flex;gap:2rem;align-items:center}
 .nav-links a{
@@ -158,7 +164,10 @@ nav.hidden{transform:translateY(-100%)}
   caret-color:var(--accent);
 }
 
-@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{
+  from{opacity:0;transform:translateY(40px) scale(.97);filter:blur(4px)}
+  to{opacity:1;transform:translateY(0) scale(1);filter:blur(0)}
+}
 
 /* SECTIONS */
 section{padding:6rem 4rem;position:relative}
@@ -185,8 +194,11 @@ footer{
 }
 .footer-icon:hover{border-color:var(--accent);color:var(--accent);background:var(--contact-hover-bg)}
 
-.reveal{opacity:0;transform:translateY(40px);transition:all .8s cubic-bezier(.16,1,.3,1)}
-.reveal.visible{opacity:1;transform:translateY(0)}
+.reveal{
+  opacity:0;transform:translateY(50px) scale(.98);
+  transition:opacity 1s cubic-bezier(.16,1,.3,1),transform 1s cubic-bezier(.16,1,.3,1);
+}
+.reveal.visible{opacity:1;transform:translateY(0) scale(1)}
 
 @media(max-width:1024px){
   .hero{padding:7rem 2rem 4rem}
@@ -231,7 +243,7 @@ footer{
 
 <!-- HERO -->
 <section class="hero" id="hero">
-  <div class="hero-grid"></div>
+  <div class="hero-grid parallax-slow" data-speed="0.3"></div>
   <div class="hero-content">
     <div class="hero-tag"><span class="line"></span> Application Security Engineer &amp; Bug Bounty Hunter</div>
     <h1 class="hero-name">Breaking<br>things <span class="accent">ethically.</span></h1>
@@ -284,92 +296,189 @@ footer{
   <p style="margin-top:.5rem;color:var(--text3)">// Keep hacking. Keep Evolving.</p>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/lenis@latest/dist/lenis.min.js"></script>
 <script>
-const glow=document.getElementById('glow');
-document.addEventListener('mousemove',e=>{glow.style.left=e.clientX+'px';glow.style.top=e.clientY+'px'});
+// ── LENIS SMOOTH SCROLL (with fallback) ──
+try {
+  const lenis = new Lenis({
+    autoRaf: true,
+    duration: 1.2,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    wheelMultiplier: 0.8,
+    touchMultiplier: 1.5,
+    smoothWheel: true,
+  });
+} catch(e) {
+  // Fallback if Lenis CDN fails to load
+  (function(){
+    let target=window.scrollY,current=window.scrollY,running=false;
+    function tick(){
+      current+=(target-current)*.08;
+      if(Math.abs(current-target)<.5){current=target;running=false}
+      window.scrollTo(0,current);
+      if(running)requestAnimationFrame(tick);
+    }
+    function go(){if(!running){running=true;requestAnimationFrame(tick)}}
+    window.addEventListener('wheel',e=>{
+      e.preventDefault();
+      target+=e.deltaY*.8;
+      target=Math.max(0,Math.min(target,document.body.scrollHeight-window.innerHeight));
+      go();
+    },{passive:false});
+    let t=false;
+    window.addEventListener('touchstart',()=>{t=true},{passive:true});
+    window.addEventListener('touchend',()=>{t=false;target=window.scrollY;current=window.scrollY},{passive:true});
+    window.addEventListener('scroll',()=>{if(t||!running){target=window.scrollY;current=window.scrollY}},{passive:true});
+  })();
+}
 
-let lastScroll=0;const nav=document.getElementById('nav');
-window.addEventListener('scroll',()=>{const c=window.scrollY;nav.classList.toggle('hidden',c>lastScroll&&c>80);lastScroll=c});
+// ── CURSOR GLOW (smooth follow) ──
+const glow = document.getElementById('glow');
+let mouseX = 0, mouseY = 0, glowX = 0, glowY = 0;
+document.addEventListener('mousemove', e => { mouseX = e.clientX; mouseY = e.clientY; });
+function animateGlow() {
+  glowX += (mouseX - glowX) * 0.08;
+  glowY += (mouseY - glowY) * 0.08;
+  glow.style.left = glowX + 'px';
+  glow.style.top = glowY + 'px';
+  requestAnimationFrame(animateGlow);
+}
+animateGlow();
 
-document.getElementById('mobileToggle').addEventListener('click',()=>{
-  const nl=document.getElementById('navLinks');nl.classList.toggle('open');
-  document.getElementById('mobileToggle').textContent=nl.classList.contains('open')?'✕':'☰';
+// ── NAV HIDE (direction-aware) ──
+let lastSY = 0;
+let navHidden = false;
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  if (sy > lastSY && sy > 100 && !navHidden) {
+    nav.classList.add('hidden'); navHidden = true;
+  } else if (sy < lastSY && navHidden) {
+    nav.classList.remove('hidden'); navHidden = false;
+  }
+  lastSY = sy;
+}, { passive: true });
+
+// ── PARALLAX ──
+const parallaxEls = document.querySelectorAll('.parallax-slow');
+window.addEventListener('scroll', () => {
+  const sy = window.scrollY;
+  parallaxEls.forEach(el => {
+    const speed = parseFloat(el.dataset.speed) || 0.3;
+    el.style.transform = 'translateY(' + (sy * speed) + 'px)';
+  });
+}, { passive: true });
+
+// ── MOBILE MENU ──
+document.getElementById('mobileToggle').addEventListener('click', () => {
+  const nl = document.getElementById('navLinks');
+  nl.classList.toggle('open');
+  document.getElementById('mobileToggle').textContent = nl.classList.contains('open') ? '✕' : '☰';
 });
-document.querySelectorAll('.nav-links a').forEach(a=>{
-  a.addEventListener('click',()=>{document.getElementById('navLinks').classList.remove('open');document.getElementById('mobileToggle').textContent='☰'});
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+    document.getElementById('mobileToggle').textContent = '☰';
+  });
 });
 
-const toggle=document.getElementById('themeToggle');
-const html=document.documentElement;
-const savedTheme=localStorage.getItem('theme')||'dark';
-html.setAttribute('data-theme',savedTheme);
-toggle.addEventListener('click',()=>{
-  const next=html.getAttribute('data-theme')==='dark'?'light':'dark';
-  html.setAttribute('data-theme',next);localStorage.setItem('theme',next);
+// ── THEME TOGGLE ──
+const toggle = document.getElementById('themeToggle');
+const html = document.documentElement;
+const savedTheme = localStorage.getItem('theme') || 'dark';
+html.setAttribute('data-theme', savedTheme);
+toggle.addEventListener('click', () => {
+  const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', next);
+  localStorage.setItem('theme', next);
 });
-toggle.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle.click()}});
+toggle.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle.click(); }
+});
 
-const observer=new IntersectionObserver(entries=>{
-  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible')});
-},{threshold:.1,rootMargin:'0px 0px -50px 0px'});
-document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
+// ── SCROLL REVEAL (with stagger) ──
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => { e.target.classList.add('visible'); }, i * 80);
+    }
+  });
+}, { threshold: 0.05, rootMargin: '0px 0px -60px 0px' });
+document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
 
 // ── INTERACTIVE TERMINAL ──
-const termOut=document.getElementById('terminalOutput');
-const termIn=document.getElementById('terminalInput');
+const termOut = document.getElementById('terminalOutput');
+const termIn = document.getElementById('terminalInput');
 
-const commands={
-  'whoami':()=>'0xlumi // appsec_engineer // bug_bounty_hunter',
-  'cat skills.json':()=>`{
+const commands = {
+  'whoami': () => '0xlumi // appsec_engineer // bug_bounty_hunter',
+  'cat skills.json': () => `{
   <span class="highlight">"web_app_pentest"</span>: true,
   <span class="highlight">"api_security"</span>: true,
   <span class="highlight">"ai_hacking"</span>: true,
   <span class="highlight">"mobile_app_hacking"</span>: true
 }`,
-  'echo $status':()=>'<span class="warn">⚡ Currently hunting bugs</span>',
-  'help':()=>`<span class="highlight">Available commands:</span>
+  'echo $status': () => '<span class="warn">⚡ Currently hunting bugs</span>',
+  'help': () => `<span class="highlight">Available commands:</span>
   whoami          — who is 0xlumi?
   cat skills.json — view my skills
   echo $STATUS    — current status
   clear           — clear terminal
   help            — show this message`,
-  'clear':()=>'__CLEAR__',
+  'clear': () => '__CLEAR__',
 };
 
-termIn.addEventListener('keydown',e=>{
-  if(e.key!=='Enter')return;
-  const raw=termIn.value.trim();
-  if(!raw){return}
-  const cmd=raw.toLowerCase();
-  termIn.value='';
+termIn.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  const raw = termIn.value.trim();
+  if (!raw) return;
+  const cmd = raw.toLowerCase();
+  termIn.value = '';
 
-  // echo the command
-  const cmdLine=document.createElement('div');
-  cmdLine.innerHTML='<span class="prompt">λ</span> <span class="cmd">'+escHtml(raw)+'</span>';
+  const cmdLine = document.createElement('div');
+  cmdLine.innerHTML = '<span class="prompt">λ</span> <span class="cmd">' + escHtml(raw) + '</span>';
+  cmdLine.style.opacity = '0';
+  cmdLine.style.transform = 'translateY(8px)';
   termOut.appendChild(cmdLine);
 
-  if(cmd==='clear'){
-    termOut.innerHTML='';
+  requestAnimationFrame(() => {
+    cmdLine.style.transition = 'all .3s cubic-bezier(.16,1,.3,1)';
+    cmdLine.style.opacity = '1';
+    cmdLine.style.transform = 'translateY(0)';
+  });
+
+  if (cmd === 'clear') {
+    termOut.style.transition = 'opacity .25s';
+    termOut.style.opacity = '0';
+    setTimeout(() => { termOut.innerHTML = ''; termOut.style.opacity = '1'; }, 250);
     return;
   }
 
-  const handler=commands[cmd];
-  const resultDiv=document.createElement('div');
-  if(handler){
-    resultDiv.classList.add('output');
-    resultDiv.innerHTML=handler();
-  } else {
-    resultDiv.innerHTML='<span class="error">403 Forbidden:</span> <span class="output">I understood what you wanted, but I\'m just refusing to do it :)</span>';
-  }
-  termOut.appendChild(resultDiv);
+  setTimeout(() => {
+    const handler = commands[cmd];
+    const resultDiv = document.createElement('div');
+    if (handler) {
+      resultDiv.classList.add('output');
+      resultDiv.innerHTML = handler();
+    } else {
+      resultDiv.innerHTML = '<span class="error">403 Forbidden:</span> <span class="output">I understood what you wanted, but I\'m just refusing to do it :)</span>';
+    }
+    resultDiv.style.opacity = '0';
+    resultDiv.style.transform = 'translateY(8px)';
+    termOut.appendChild(resultDiv);
+    termOut.appendChild(document.createElement('br'));
 
-  const br=document.createElement('br');
-  termOut.appendChild(br);
+    requestAnimationFrame(() => {
+      resultDiv.style.transition = 'all .4s cubic-bezier(.16,1,.3,1)';
+      resultDiv.style.opacity = '1';
+      resultDiv.style.transform = 'translateY(0)';
+    });
 
-  termOut.scrollTop=termOut.scrollHeight;
+    termOut.scrollTo({ top: termOut.scrollHeight, behavior: 'smooth' });
+  }, 120);
 });
 
-function escHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')}
+function escHtml(s) { return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;'); }
 </script>
 </body>
 </html>
