@@ -418,14 +418,23 @@ const commands = {
   <span class="highlight">"mobile_app_hacking"</span>: true
 }`,
   'echo $status': () => '<span class="warn">⚡ Currently hunting bugs</span>',
-  'help': () => `<span class="highlight">Available commands:</span>
-  whoami          — who is 0xlumi?
-  cat skills.json — view my skills
-  echo $STATUS    — current status
-  clear           — clear terminal
-  help            — show this message`,
+  'ls': () => `{
+  <span class="highlight">"web_app_pentest"</span>: true,
+  <span class="highlight">"api_security"</span>: true,
+  <span class="highlight">"ai_hacking"</span>: true,
+  <span class="highlight">"mobile_app_hacking"</span>: true
+}`,
+  'help': () => `<span class="highlight">Available commands:</span><br>
+<span class="cmd">whoami</span> <span class="output">— who is 0xlumi?</span><br>
+<span class="cmd">cat skills.json</span> <span class="output">— view my skills</span><br>
+<span class="cmd">ls</span> <span class="output">— list skills</span><br>
+<span class="cmd">echo $STATUS</span> <span class="output">— current status</span><br>
+<span class="cmd">clear</span> <span class="output">— clear terminal</span><br>
+<span class="cmd">help</span> <span class="output">— show this message</span>`,
   'clear': () => '__CLEAR__',
+  'hekp': null,
 };
+commands['hekp'] = commands['help'];
 
 termIn.addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
@@ -460,7 +469,17 @@ termIn.addEventListener('keydown', e => {
       resultDiv.classList.add('output');
       resultDiv.innerHTML = handler();
     } else {
-      resultDiv.innerHTML = '<span class="error">403 Forbidden:</span> <span class="output">I understood what you wanted, but I\'m just refusing to do it :)</span>';
+      // detect gibberish: repeating chars, no vowels, or mostly numbers/random
+      const clean = cmd.replace(/\s/g,'');
+      const isGibberish = /^(.)\1+$/.test(clean) ||
+        (clean.length > 3 && !/[aeiou]/i.test(clean) && !/^\d+$/.test(clean)) ||
+        (clean.length > 5 && /^\d+$/.test(clean)) ||
+        (clean.length > 4 && /^[a-z0-9]+$/i.test(clean) && !/^[a-z]+$/i.test(clean) && !/^\d{1,5}$/.test(clean) && !cmd.includes(' '));
+      if (isGibberish) {
+        resultDiv.innerHTML = '<span class="warn">c\'mon don\'t do that</span>';
+      } else {
+        resultDiv.innerHTML = '<span class="error">403 Forbidden:</span> <span class="output">I understood what you wanted, but your command is incorrect :) — use <span class="highlight">help</span></span>';
+      }
     }
     resultDiv.style.opacity = '0';
     resultDiv.style.transform = 'translateY(8px)';
