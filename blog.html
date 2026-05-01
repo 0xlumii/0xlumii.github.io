@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>0xlumi — Blog</title>
-<link rel="icon" type="image/png" href="favicon.png">
+<link rel="icon" type="image/x-icon" href="favicon.ico">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Outfit:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
@@ -102,12 +102,19 @@ nav.hidden{transform:translateY(-110%)}
 
 .blog-list{max-width:900px;margin:0 auto;padding:0 4rem 4rem}
 .blog-post{
-  display:block;text-decoration:none;color:inherit;
+  display:grid;grid-template-columns:280px 1fr;gap:1.5rem;text-decoration:none;color:inherit;
   padding:2rem 0;border-bottom:1px solid var(--border-color);transition:all .3s;position:relative;
 }
 .blog-post:first-child{border-top:1px solid var(--border-color)}
 .blog-post:hover{padding-left:1rem}
 .blog-post:hover .blog-post-title{color:var(--accent)}
+.blog-post:hover .blog-post-cover img{transform:scale(1.04)}
+.blog-post-cover{
+  width:100%;aspect-ratio:16/9;border-radius:8px;overflow:hidden;
+  background:var(--bg2);border:1px solid var(--border-color);
+}
+.blog-post-cover img{width:100%;height:100%;object-fit:cover;transition:transform .6s cubic-bezier(.16,1,.3,1)}
+.blog-post-meta{display:flex;flex-direction:column;justify-content:center}
 .blog-post-date{
   font-family:'JetBrains Mono',monospace;font-size:.7rem;color:var(--accent);
   letter-spacing:.1em;margin-bottom:.5rem;display:flex;align-items:center;gap:1rem;
@@ -151,6 +158,7 @@ footer{
   .blog-header{padding:7rem 2rem 2rem}
   .blog-list{padding:0 2rem 3rem}
   .nav-right{gap:.6rem}
+  .blog-post{grid-template-columns:1fr;gap:1rem}
 }
 @media(max-width:480px){
   .blog-header{padding:6rem 1.5rem 2rem}
@@ -198,14 +206,19 @@ footer{
   ╚══════════════════════════════════════════════════════════════╝
   -->
 
-  <a href="#" class="blog-post reveal">
-    <div class="blog-post-date">
-      March 29, 2026
-      <span class="blog-post-tag">Test</span>
+  <a href="post-broken-access-control.html" class="blog-post reveal">
+    <div class="blog-post-cover">
+      <img src="blog-1-cover.png" alt="Broken Access Control: Removed users can still send messages">
     </div>
-    <div class="blog-post-title">test test</div>
-    <p class="blog-post-excerpt">test test</p>
-    <div class="blog-post-read">Read more →</div>
+    <div class="blog-post-meta">
+      <div class="blog-post-date">
+        March 29, 2026
+        <span class="blog-post-tag">Broken Access Control</span>
+      </div>
+      <div class="blog-post-title">How I Found a Simple Broken Access Control Bug in a Chat Application</div>
+      <p class="blog-post-excerpt">During a security testing of a chat feature on a target, I discovered a simple but impactful Broken Access Control vulnerability. This bug allowed a removed user of a channel to continue sending messages to a private channel — something that should never happen in a properly secured system.</p>
+      <div class="blog-post-read">Read more →</div>
+    </div>
   </a>
 
 </div>
@@ -214,6 +227,7 @@ footer{
   <div class="footer-links">
     <a href="https://www.linkedin.com/in/pelumi-obafemi-263813213/" class="footer-icon" target="_blank">in LinkedIn</a>
     <a href="https://app.intigriti.com/researcher/profile/0xpelz" class="footer-icon" target="_blank">🛡 Intigriti</a>
+    <a href="https://yeswehack.com/hunters/0xpelz" class="footer-icon" target="_blank">🔐 YesWeHack</a>
     <a href="https://medium.com/@obafemipelumi2003" class="footer-icon" target="_blank">✍ Medium</a>
   </div>
   <p style="margin-top:1.2rem">Designed &amp; Built with 🖤 — © 2026 0xlumi. All rights reserved.</p>
